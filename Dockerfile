@@ -4,6 +4,9 @@ FROM python:3.10-slim
 # Establece el directorio de trabajo
 WORKDIR /app
 
+# Instala libgomp1
+RUN apt-get update && apt-get install -y libgomp1
+
 # Copia los archivos de requerimientos e instálalos
 COPY requirements.txt ./
 RUN pip install --upgrade pip && \
