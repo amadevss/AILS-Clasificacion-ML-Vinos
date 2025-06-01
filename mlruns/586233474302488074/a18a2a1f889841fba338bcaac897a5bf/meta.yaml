@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/cooti-ibfk/Desktop/amadevs/AiLabSchool/p1/mlruns/586233474302488074/a18a2a1f889841fba338bcaac897a5bf/artifacts
+end_time: 1748740835386
+entry_point_name: ''
+experiment_id: '586233474302488074'
+lifecycle_stage: active
+run_id: a18a2a1f889841fba338bcaac897a5bf
+run_name: LazyPredict_Backend
+run_uuid: a18a2a1f889841fba338bcaac897a5bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748740834770
+status: 3
+tags: []
+user_id: cooti-ibfk
