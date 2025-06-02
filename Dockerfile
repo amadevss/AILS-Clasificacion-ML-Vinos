@@ -20,6 +20,9 @@ RUN useradd -m -u 1000 appuser
 # Establece el directorio de trabajo
 WORKDIR /app
 
+# Instala libgomp1
+RUN apt-get update && apt-get install -y libgomp1
+
 # Copia los archivos de requerimientos e instálalos
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
