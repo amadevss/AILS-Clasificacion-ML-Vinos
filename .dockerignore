@@ -1,12 +1,52 @@
-venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.ipynb_checkpoints/
-.git/
+# Git
+.git
 .gitignore
-.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+.venv
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# MLflow
+mlruns/
+
+# Logs y bases de datos
+*.log
+*.sqlite
 *.db
-*.sqlite3 
+
+# Archivos de modelo (si no quieres incluirlos en la imagen)
+models/*.pkl
+models/*.h5
+models/*.model
+models/*.joblib
+
+# Archivos de caché
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

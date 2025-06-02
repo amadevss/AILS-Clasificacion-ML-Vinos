@@ -8,8 +8,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import io
 import base64
-from models.wine_classifier import WineClassifier
-from utils.wine_features import WINE_FEATURES, WINE_CLASSES, validate_features
 from ucimlrepo import fetch_ucirepo
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -19,6 +17,39 @@ import lazypredict
 from lazypredict.Supervised import LazyClassifier
 import mlflow
 import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+import os
+
+class WineClassifier:
+    def __init__(self):
+        self.model = None
+        self.scaler = StandardScaler()
+        
+    def load_model(self):
+        model_path = "wine_model.joblib"
+        if os.path.exists(model_path):
+            self.model = joblib.load(model_path)
+        else:
+            # Si no existe el modelo, entrenar uno nuevo
+            wine = fetch_ucirepo(id=109)
+            X = wine.data.features
+            y = wine.data.targets
+            
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            X_train_scaled = self.scaler.fit_transform(X_train)
+            
+            self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+            self.model.fit(X_train_scaled, y_train)
+            
+            # Guardar el modelo
+            joblib.dump(self.model, model_path)
+    
+    def predict(self, features):
+        features_scaled = self.scaler.transform(features)
+        prediction = self.model.predict(features_scaled)
+        probabilities = self.model.predict_proba(features_scaled)
+        return prediction, probabilities
 
 app = FastAPI(title="Clasificador de Vinos")
 
@@ -30,14 +61,33 @@ templates = Jinja2Templates(directory="templates")
 classifier = WineClassifier()
 classifier.load_model()
 
-# Configurar estilo de gráficos
-plt.style.use('ggplot')
-sns.set_theme(style="whitegrid")
-
 # Cargar el dataset de vinos
 wine = fetch_ucirepo(id=109)
 X = wine.data.features
 y = wine.data.targets
+
+# Definir WINE_FEATURES y WINE_CLASSES directamente
+def get_wine_classes(y):
+    # Si y es un DataFrame o Series con una sola columna
+    if hasattr(y, 'unique'):
+        return list(y.unique())
+    # Si y es un DataFrame con varias columnas
+    elif hasattr(y, 'iloc'):
+        return list(y.iloc[:, 0].unique())
+    else:
+        return list(set(y))
+
+WINE_FEATURES = list(X.columns)
+WINE_CLASSES = get_wine_classes(y)
+
+def validate_features(features):
+    # Verifica que todos los valores sean numéricos
+    for value in features.values():
+        try:
+            float(value)
+        except ValueError:
+            return False, "Todos los valores deben ser numéricos."
+    return True, ""
 
 # Dividir los datos en conjuntos de entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
